@@ -1,0 +1,15 @@
+node_modules/
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+.vscode/
+.idea/
+dist/
+build/
+coverage/
+*.pid
+*.seed
+*.pid.lock
+.cache/
