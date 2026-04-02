@@ -8,9 +8,9 @@ import rateLimit from "express-rate-limit";
 import slowDown from "express-slow-down";
 import hpp from "hpp";
 
-// Rate limiting - 5 requests per 15 mins per IP
+// Rate limiting - 5 requests per 2 mins per IP
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
+  windowMs: 2 * 60 * 1000, // 2 minutes
   max: 5,
   message: { message: "Too many requests. Try later." },
   standardHeaders: true,
@@ -20,11 +20,10 @@ const limiter = rateLimit({
 
 // Slow down - progressive delay for repeated requests
 const speedLimiter = slowDown({
-  windowMs: 15 * 60 * 1000,
+  windowMs: 2 * 60 * 1000, // 2 minutes
   delayAfter: 2,
   delayMs: (used) => Math.min((used - 2) * 500, 5000),
 });
-
 const app = express();
 
 // Trust proxy for correct IP detection behind Render
@@ -60,7 +59,7 @@ app.use(hpp());
 
 // CORS - restrict to your frontend origin
 const corsOptions = {
-  origin: process.env.ALLOWED_ORIGIN || ["https://website-seven-khaki-57.vercel.app", "http://localhost:5174", "www.cccakgec.in", "ccakgec.in", "new-ccc.vercel.app"],
+  origin: process.env.ALLOWED_ORIGIN || ["https://website-seven-khaki-57.vercel.app", "http://localhost:5174", "www.cccakgec.in", "ccakgec.in", "new-ccc.vercel.app","http://localhost:5173"],
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
   credentials: false,
@@ -146,6 +145,9 @@ const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`CORS allowed origin: ${corsOptions.origin}`);
 });
+
+// Export for Vercel serverless
+export default app;
 
 // Graceful shutdown
 const gracefulShutdown = (signal) => {
